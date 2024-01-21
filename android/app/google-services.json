@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85656976480",
+    "project_id": "tarefas-a511a",
+    "storage_bucket": "tarefas-a511a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85656976480:android:e209d3e3a900f4e878d705",
+        "android_client_info": {
+          "package_name": "com.example.tarefas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWrDxf_NDddz2fRAMjPvfhRab837rJmIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
