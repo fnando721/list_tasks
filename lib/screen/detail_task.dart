@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tarefas/components/textFieldsDetailsDecoration.dart';
 import 'package:tarefas/models/tasks.dart';
 
 class DetailTask extends StatefulWidget {
@@ -17,40 +18,49 @@ class _DetailTaskState extends State<DetailTask> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
         title: Text(
           'Detalhes da Tarefa',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.amber,
-        elevation: 0,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white
+            )),
+
       ),
       body: Container(
         width: size.width,
         height: size.height,
-        color: Colors.blueGrey,
+        color: Colors.white,
         child: Column(
           children: [
+            Text(
+              'Titulo: ',
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Nome: ',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  Text(
-                    widget.task.nome,
-                    style: TextStyle(fontSize: 22, color: Colors.black),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.blueGrey,
-                      )),
-                ],
+              padding: const EdgeInsets.all(30),
+              child: Container(
+                child: TextFormField(
+                 // controller: ,//nomeController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Digite o nome da tarefa';
+                    }
+                    return null;
+                  },
+
+                  decoration: textFieldsDetailsDecoration(),
+                  keyboardType: TextInputType.text,
+                ),
               ),
-            )
+            ),
+
           ],
         ),
       ),

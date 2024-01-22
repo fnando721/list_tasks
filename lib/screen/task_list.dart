@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tarefas/models/repository/task_repository.dart';
 import 'package:tarefas/models/tasks.dart';
 import 'package:tarefas/screen/add_task.dart';
 import 'package:tarefas/screen/detail_task.dart';
+
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
@@ -13,8 +13,8 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  final Stream<QuerySnapshot> _tarefaStream =
-      FirebaseFirestore.instance.collection('tarefa').snapshots();
+  final Stream<QuerySnapshot> _streamTask =
+      FirebaseFirestore.instance.collection('Tarefa').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -22,176 +22,137 @@ class _TaskListState extends State<TaskList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Minhas Tarefas',
-            style: TextStyle(color: Colors.white),
+        backgroundColor: Colors.blueGrey,
+        leading: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            child: Text('F'),
           ),
         ),
-        backgroundColor: Colors.blueGrey,
         actions: [
           IconButton(
               onPressed: () {
-                setState(() {
-                  getTask();
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddTask(),
+                  ),
+                );
               },
-              icon: const Icon(Icons.add)),
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              )),
         ],
       ),
       body: Container(
-        width: size.width,
-        height: size.height,
-        color: Colors.blueGrey,
-        child: SafeArea(
-          bottom: true,
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: SizedBox(
-                    width: size.width * 0.7,
-                    height: size.height * 0.07,
+          width: size.width,
+          height: size.height,
+          color: Colors.white,
+          child: StreamBuilder<QuerySnapshot>(
+              stream: _streamTask,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                      child: SizedBox(
+                          child: Text(
+                    'Erro ao buscar Atividades!',
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  )));
+                }
 
-                    child: const TextField(
-                      decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.search), hintText: 'Pesquisar'),
-                    ),
-                  ),
-                ),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text("Carregando tarefas"),
+                    ],
+                  ));
+                }
 
+                return ListView(
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    Timestamp t = data['dtconclusao'];
+                    Task task = Task(data['nome'], 'categoria',
+                        data['descricao'], t.toDate(), data['estaFeito']);
 
+                    return Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailTask(task: task,)));
+                          },
+                        child: Container(
+                          width: size.width * 0.9,
+                          height: size.height * 0.1,
+                          decoration: BoxDecoration(
+                              boxShadow: const <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 5,
+                                    offset: Offset(0.0, 0.75)
+                                )
+                              ],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
 
-                SizedBox(
-                  width: size.width,
-                  height: size.height * 0.8,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16, left: 8),
+                                  child: SizedBox(
+                                    width: size.width * 0.87,
+                                    height: size.height * 0.1,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          children:<Widget> [
+                                            const Icon(Icons.label_important, color: Colors.amber,),
+                                            const SizedBox(width: 5,),
+                                            Text(task.nome, style: const TextStyle(fontSize: 18, fontWeight:FontWeight.bold ),),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8),
+                                          child: Row(
+                                            children:<Widget> [
 
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: _tarefaStream,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-
-
-                      if (snapshot.hasError) {
-                        return Text('Something went wrong');
-                      }
-
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                            Text("Carregando tarefas"),
-                          ],
-                        ));
-                      }
-
-
-                      return ListView(
-                        children:
-                            snapshot.data!.docs.map((DocumentSnapshot document) {
-                          Map<String, dynamic> data =
-                              document.data()! as Map<String, dynamic>;
-                          Timestamp t = data['dtconclusao'];
-                          Task task = Task(data['nome'], 'categoria', data['descricao'], t.toDate(), data['estaFeito']);
-
-                          return Padding(
-                            padding: const EdgeInsets.all(6),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)
-                              ),
-
-                              child: GestureDetector(
-                                onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            DetailTask(task: task),
-                                      ),
-                                    );
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 12),
-                                      child: Icon(Icons.circle,
-                                          size: 12,
-                                          color: data['estaFeito']
-                                              ? Colors.green
-                                              : DateTime.now() == task.dtConclusao
-                                                  ? Colors.amber
-                                                  : Colors.red),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 12),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: size.width * 0.8,
-                                            child: Text(
-                                              task.nome,
-                                              style: const TextStyle(fontSize: 18),
-                                            ),
+                                              Text(task.nome, style: const TextStyle(fontSize: 15),),
+                                            ],
                                           ),
-                                          SizedBox(
-                                            child: Text(
-                                                'Data Conclusão: ${task.dtConclusao.day}/${task.dtConclusao.month}/${task.dtConclusao.year}',
-                                                style: const TextStyle(fontSize: 12)),
-                                          )
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.delete),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-
-
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddTask(),
-            ),
-          );
-        },
-        child: Container(
-            width: size.width,
-            height: size.height,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            )),
-      ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(left: 8, right: 12),
+                                  child: SizedBox(
+                                    width: size.width * 0.03,
+                                    height: size.height * 0.03,
+                                    child: CircleAvatar(
+                                      backgroundColor: task.estaFeito
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              })),
     );
   }
 }

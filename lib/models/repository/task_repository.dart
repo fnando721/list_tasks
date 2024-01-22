@@ -1,27 +1,26 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tarefas/dao/firestore.dart';
 import 'package:tarefas/models/tasks.dart';
 
-void addTask(Task task) async {
-  FirebaseFirestore db = DBFirestore.get();
+void addTask(Task task) {
+  CollectionReference db = FirebaseFirestore.instance.collection('Tarefa');
+  String id;
 
-  var docRef = await db.collection('tarefa').add({
+  db.add({
     'nome': task.nome,
     'descricao': task.descricao,
     'dtconclusao': task.dtConclusao,
     'estaFeito': task.estaFeito
+  }).then((DocumentReference doc){
+    id  = doc.id;
+    print(id);
   });
 
-  var tarefa = await db.collection('tarefa').get();
-  print(tarefa.toString());
 }
 
 void editTask(Task task) async {
   FirebaseFirestore db = DBFirestore.get();
-  await db.collection('tarefa').doc('tarefa').update({
+  await db.collection('Tarefa').doc('Tarefa').update({
     'nome': task.nome,
     'descricao': task.descricao,
     'dtconclusao': task.dtConclusao,
