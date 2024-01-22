@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tarefas/dao/firestore.dart';
 import 'package:tarefas/models/tasks.dart';
