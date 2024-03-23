@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:tarefas/screen/task_list.dart';
+import 'package:tarefas/screen/login.dart';
+import 'package:tarefas/services/apiAuth.dart';
 import 'firebase_options.dart';
+import 'widget/checkAuth.dart';
 
 void main() async {
-  runApp(const Waiting());
+ runApp(const Waiting());
+ getDio();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -22,9 +25,8 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
         ),
-        home:  TaskList()
+        home:  CheckAuth()
         );
   }
 }
@@ -62,3 +64,6 @@ class Waiting extends StatelessWidget {
     );
   }
 }
+
+
+

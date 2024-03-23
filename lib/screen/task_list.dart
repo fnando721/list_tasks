@@ -13,7 +13,7 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   final Stream<QuerySnapshot> _tarefaStream =
-      FirebaseFirestore.instance.collection('tarefa').snapshots();
+      FirebaseFirestore.instance.collection('Tarefa').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +21,14 @@ class _TaskListState extends State<TaskList> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.blueGrey,
         leading: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(child: Text('F'),),
+          child: CircleAvatar(
+            child: Text('F'),
+          ),
         ),
+
         actions: [
           IconButton(
               onPressed: () {
@@ -38,167 +41,121 @@ class _TaskListState extends State<TaskList> {
               },
               icon: const Icon(
                 Icons.add,
-                color: Colors.cyan,
+                color: Colors.white,
               )),
         ],
+
       ),
+      endDrawer: Container(),
       body: Container(
         width: size.width,
         height: size.height,
-        color: Colors.blueGrey,
-        child: SafeArea(
-          bottom: true,
-          child: Column(children: [
-            Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: size.height * 0.05,
-                    ),
+        color: Colors.white,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _tarefaStream,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Center(
+                  child: SizedBox(
+                      child: Text(
+                'Erro ao buscar usuário!',
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              )));
+            }
 
-                    // Padding(
-                    //   padding: const EdgeInsets.all(14),
-                    //   child: SizedBox(
-                    //     width: size.width * 0.7,
-                    //     height: size.height * 0.07,
-                    //     child: const TextField(
-                    //       decoration: InputDecoration(
-                    //           suffixIcon: Icon(Icons.search),
-                    //           hintText: 'Pesquisar'),
-                    //     ),
-                    //   ),
-                    // ),
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text("Carregando tarefas"),
+                ],
+              ));
+            }
 
-                    const Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.task,
-                          size: 26,
-                        ),
-                        Text(
-                          '  Minhas Atividades',
-                          style: TextStyle(
-                            fontSize: 26,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-
-
-                    StreamBuilder<QuerySnapshot>(
-                      stream: _tarefaStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(child: SizedBox(child: Text('Erro ao buscar usuário!', style: TextStyle(color: Colors.red, fontSize: 16),)));
-                        }
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(),
-                              Text("Carregando tarefas"),
-                            ],
-                          ));
-                        }
-
-                        return ListView(
-                          children: snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data()! as Map<String, dynamic>;
-                            Timestamp t = data['dtconclusao'];
-                            Task task = Task(
-                                data['nome'],
-                                'categoria',
-                                data['descricao'],
-                                t.toDate(),
-                                data['estaFeito']);
-
-                            return Padding(
-                              padding: const EdgeInsets.all(6),
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                Timestamp t = data['dtconclusao'];
+                Task task = Task(data['nome'], 'categoria', data['descricao'],
+                    t.toDate(), data['estaFeito']);
+                print(task.nome);
+                return Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailTask(task: task)));
+                    },
+                    child: Container(
+                      width: size.width * 0.8,
+                      height: size.height * 0.1,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 10.0,
+                              offset: Offset(0.0, 0.75))
+                        ],
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 16),
                               child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            DetailTask(task: task),
-                                      ),
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 12),
-                                        child: Icon(Icons.circle,
-                                            size: 12,
-                                            color: data['estaFeito']
-                                                ? Colors.green
-                                                : DateTime.now() ==
-                                                        task.dtConclusao
-                                                    ? Colors.amber
-                                                    : Colors.red),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 12),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: size.width * 0.8,
-                                              child: Text(
-                                                task.nome,
-                                                style: const TextStyle(
-                                                    fontSize: 18),
-                                              ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      width: size.width * 0.8,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.label_important,
+                                            color: Colors.amber,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all( 8),
+                                            child: Text(
+                                              task.nome,
+                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(
-                                              child: Text(
-                                                  'Data Conclusão: ${task.dtConclusao.day}/${task.dtConclusao.month}/${task.dtConclusao.year}',
-                                                  style: const TextStyle(
-                                                      fontSize: 12)),
-                                            )
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.delete),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      task.descricao,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        );
-                      },
+                            ),
+                          ),
+                          Container(
+                            width: size.width * 0.03,
+                            height: size.height * 0.03,
+                            child: CircleAvatar(
+                              backgroundColor:  task.estaFeito? Colors.green: Colors.red,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ]),
+                  ),
+                );
+              }).toList(),
+            );
+          },
         ),
       ),
     );

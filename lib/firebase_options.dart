@@ -44,37 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCDj0ez8LgZfzAzVL3uCJ9qKyaBos0lf6U',
-    appId: '1:85656976480:web:b9629aba783f003a78d705',
-    messagingSenderId: '85656976480',
-    projectId: 'tarefas-a511a',
-    authDomain: 'tarefas-a511a.firebaseapp.com',
-    storageBucket: 'tarefas-a511a.appspot.com',
+    apiKey: 'AIzaSyARPU6GHaN62MRgMvNuFETnarn52noAl_A',
+    appId: '1:891238539311:web:73d9b7580e51b3a719a6da',
+    messagingSenderId: '891238539311',
+    projectId: 'mytask-bb756',
+    authDomain: 'mytask-bb756.firebaseapp.com',
+    storageBucket: 'mytask-bb756.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAWrDxf_NDddz2fRAMjPvfhRab837rJmIc',
-    appId: '1:85656976480:android:e209d3e3a900f4e878d705',
-    messagingSenderId: '85656976480',
-    projectId: 'tarefas-a511a',
-    storageBucket: 'tarefas-a511a.appspot.com',
+    apiKey: 'AIzaSyCNtKyiDxKaouR-5-Gjh4Cky8_d68gtiis',
+    appId: '1:891238539311:android:c1e7e610b58405f319a6da',
+    messagingSenderId: '891238539311',
+    projectId: 'mytask-bb756',
+    storageBucket: 'mytask-bb756.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAjyd_iw2h571sz1faSF1IDWTEQeDMtgCc',
-    appId: '1:85656976480:ios:87f78ac9c70ee9b578d705',
-    messagingSenderId: '85656976480',
-    projectId: 'tarefas-a511a',
-    storageBucket: 'tarefas-a511a.appspot.com',
+    apiKey: 'AIzaSyA1BDxaHDQGcVf62eELstTzN2_TVrTQt-4',
+    appId: '1:891238539311:ios:a5f049cd78c1454419a6da',
+    messagingSenderId: '891238539311',
+    projectId: 'mytask-bb756',
+    storageBucket: 'mytask-bb756.appspot.com',
     iosBundleId: 'com.example.tarefas',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAjyd_iw2h571sz1faSF1IDWTEQeDMtgCc',
-    appId: '1:85656976480:ios:e29565f1bf3d665678d705',
-    messagingSenderId: '85656976480',
-    projectId: 'tarefas-a511a',
-    storageBucket: 'tarefas-a511a.appspot.com',
+    apiKey: 'AIzaSyA1BDxaHDQGcVf62eELstTzN2_TVrTQt-4',
+    appId: '1:891238539311:ios:6a0aac694fc22ea519a6da',
+    messagingSenderId: '891238539311',
+    projectId: 'mytask-bb756',
+    storageBucket: 'mytask-bb756.appspot.com',
     iosBundleId: 'com.example.tarefas.RunnerTests',
   );
 }

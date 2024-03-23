@@ -14,8 +14,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.24.0
   cloud_firestore: ^4.13.5
-  sqflite: ^2.3.0
   intl: ^0.19.0
+  flutter_svg: ^2.0.10+1
+  shared_preferences: ^2.2.2
+  firebase_auth: ^4.17.8
+  dio: ^5.4.1
 
 
 dev_dependencies:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tarefas/components/textFieldsDetailsDecoration.dart';
 import 'package:tarefas/models/tasks.dart';
 
 class DetailTask extends StatefulWidget {
@@ -19,39 +20,45 @@ class _DetailTaskState extends State<DetailTask> {
       appBar: AppBar(
         title: Text(
           'Detalhes da Tarefa',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.amber,
-        elevation: 0,
+        backgroundColor: Colors.blueGrey,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+            )),
       ),
-      body: Container(
-        width: size.width,
-        height: size.height,
-        color: Colors.blueGrey,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Nome: ',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  Text(
-                    widget.task.nome,
-                    style: TextStyle(fontSize: 22, color: Colors.black),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.blueGrey,
-                      )),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        child: Container(
+          width: size.width,
+          height: size.height ,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: size.height * 0.03,
               ),
-            )
-          ],
+              Text('Titulo', style: TextStyle(fontSize: 16),),
+              TextFormField(
+                //controller: ,
+                decoration: textFieldsDetailsDecoration('Nome do Titulo'),
+              ),
+
+              Container(
+                height: 100,
+                child: TextFormField(
+                  //controller: ,
+                  decoration: textFieldsDetailsDecoration('Descrição'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

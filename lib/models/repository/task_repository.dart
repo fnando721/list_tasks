@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tarefas/dao/firestore.dart';
 import 'package:tarefas/models/tasks.dart';
+import 'package:tarefas/services/firestore.dart';
 
 void addTask(Task task) async {
   FirebaseFirestore db = DBFirestore.get();
 
-  var docRef = await db.collection('tarefa').add({
+  var docRef = await db.collection('Tarefa').add({
     'nome': task.nome,
     'descricao': task.descricao,
     'dtconclusao': task.dtConclusao,

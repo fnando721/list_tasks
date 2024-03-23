@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tarefas/components/textFieldsAddTaskDecoration.dart';
 import 'package:tarefas/models/repository/task_repository.dart';
 import 'package:tarefas/models/tasks.dart';
 
@@ -33,7 +34,7 @@ class _AddTaskState extends State<AddTask> {
           title: const Center(
               child: Text(
             'Adicionar Tarefa',
-            style: TextStyle(fontSize: 26, color: Colors.cyan),
+            style: TextStyle(fontSize: 26, color: Colors.white),
           )),
           leading: IconButton(
               onPressed: () {
@@ -41,17 +42,18 @@ class _AddTaskState extends State<AddTask> {
               },
               icon: Icon(
                 Icons.arrow_back_rounded,
-                color: Colors.cyan,
+                color: Colors.white,
               )),
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.blueGrey,
         ),
+
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(
             child: Container(
               width: size.width,
               height: size.height,
-              color: Colors.blueGrey,
+              color: Colors.white,
               child: Column(
                 children: <Widget>[
                   Center(
@@ -72,13 +74,7 @@ class _AddTaskState extends State<AddTask> {
                                 }
                                 return null;
                               },
-                              decoration: const InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 3, color: Colors.cyan),
-                                ),
-                                hintText: 'Nome da Tarefa',
-                              ),
+                              decoration: textFieldsAddTaskDecoration('Nome Titulo'),
                               keyboardType: TextInputType.text,
                             ),
                           ),
@@ -92,32 +88,21 @@ class _AddTaskState extends State<AddTask> {
                                 }
                                 return null;
                               },
-                              decoration: const InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 3, color: Colors.cyan),
-                                ),
-                                hintText: 'Descrição',
-                              ),
+                              decoration: textFieldsAddTaskDecoration('Descrição'),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(30),
                             child: TextFormField(
                               controller: dataController,
-                              decoration: const InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 3, color: Colors.cyan),
-                                ),
-                                hintText: 'Data de conclusão',
-                              ),
+                              decoration: textFieldsAddTaskDecoration('Data Conclusão')
                             ),
                           ),
 
 
 
-                          // InputDatePickerFormField(
+                          //  InputDatePickerFormField(
+                          //    fieldHintText: 'Data Conclusão',
                           //   firstDate: firstDate,
                           //   lastDate: lastDate,
                           //   errorFormatText: 'Erro no formato do texto',
@@ -160,7 +145,7 @@ class _AddTaskState extends State<AddTask> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.only(top: 32),
                             child: GestureDetector(
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
@@ -177,14 +162,14 @@ class _AddTaskState extends State<AddTask> {
                                 width: size.width * 0.5,
                                 height: size.height * 0.07,
                                 decoration: BoxDecoration(
-                                  color: Colors.cyan,
+                                  color: Colors.blueGrey,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Center(
                                     child: Text(
                                   'Adicionar',
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                      fontSize: 20, color: Colors.white),
                                 )),
                               ),
                             ),
