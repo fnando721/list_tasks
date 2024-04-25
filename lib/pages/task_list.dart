@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tarefas/models/tasks.dart';
-import 'package:tarefas/screen/add_task.dart';
-import 'package:tarefas/screen/detail_task.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tarefas/models/task.dart';
+import '../services/auth_service.dart';
+import 'add_task.dart';
+import 'detail_task.dart';
+import 'login_page.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
@@ -12,12 +15,15 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  final Stream<QuerySnapshot> _tarefaStream =
-      FirebaseFirestore.instance.collection('Tarefa').snapshots();
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    AuthService auth = AuthService();
+
+
+
+    final Stream<QuerySnapshot> tarefaStream =
+        FirebaseFirestore.instance.collection('Tarefa').snapshots();
 
     return Scaffold(
       appBar: AppBar(
@@ -25,10 +31,9 @@ class _TaskListState extends State<TaskList> {
         leading: const Padding(
           padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
-            child: Text('F'),
+            child: Text('A'),
           ),
         ),
-
         actions: [
           IconButton(
               onPressed: () {
@@ -43,8 +48,19 @@ class _TaskListState extends State<TaskList> {
                 Icons.add,
                 color: Colors.white,
               )),
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Login()),
+              );
+            },
+            icon: const Icon(
+              Icons.exit_to_app_outlined,
+              color: Colors.white,
+            ),
+          ),
         ],
-
       ),
       endDrawer: Container(),
       body: Container(
@@ -52,17 +68,19 @@ class _TaskListState extends State<TaskList> {
         height: size.height,
         color: Colors.white,
         child: StreamBuilder<QuerySnapshot>(
-          stream: _tarefaStream,
+          stream: tarefaStream,
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+
             if (snapshot.hasError) {
               return const Center(
-                  child: SizedBox(
-                      child: Text(
+                  child: Text(
                 'Erro ao buscar usuário!',
                 style: TextStyle(color: Colors.red, fontSize: 16),
-              )));
+              ));
             }
+
 
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -75,14 +93,32 @@ class _TaskListState extends State<TaskList> {
               ));
             }
 
+
+
+
+
+
             return ListView(
+
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                Timestamp t = data['dtconclusao'];
-                Task task = Task(data['nome'], 'categoria', data['descricao'],
-                    t.toDate(), data['estaFeito']);
-                print(task.nome);
+                print(data);
+                if (data == null || data.toString().isEmpty){
+                  return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.network('https://www.svgrepo.com/show/310081/task-list-add.svg'),
+                          Text("Adicione uma Atividade!"),
+                        ],
+                      ));
+                }
+
+                Timestamp t = data['date'];
+                Task task = Task(data['name'], 'priority', data['description'],
+                    t.toDate(), data['isDone']);
+
                 return Padding(
                   padding: const EdgeInsets.all(8),
                   child: GestureDetector(
@@ -98,7 +134,7 @@ class _TaskListState extends State<TaskList> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        boxShadow: <BoxShadow>[
+                        boxShadow: const <BoxShadow>[
                           BoxShadow(
                               color: Colors.black54,
                               blurRadius: 10.0,
@@ -107,45 +143,44 @@ class _TaskListState extends State<TaskList> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      width: size.width * 0.8,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.label_important,
-                                            color: Colors.amber,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all( 8),
-                                            child: Text(
-                                              task.nome,
-                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: size.width * 0.8,
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Icon(
+                                        Icons.label_important,
+                                        color: Colors.amber,
                                       ),
-                                    ),
-                                    Text(
-                                      task.descricao,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Text(
+                                          task.name,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                Text(
+                                  task.description,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: size.width * 0.03,
                             height: size.height * 0.03,
                             child: CircleAvatar(
-                              backgroundColor:  task.estaFeito? Colors.green: Colors.red,
+                              backgroundColor:
+                                  task.isDone ? Colors.green : task.date == DateTime.now()? Colors.amber: Colors.red ,
                             ),
                           )
                         ],
