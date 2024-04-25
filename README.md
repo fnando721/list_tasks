@@ -1,16 +1,22 @@
-# tarefas
+# list_tasks
 
-A new Flutter project.
+Um aplicativo Flutter para controle de tarefas.
 
-## Getting Started
+## Descrição
 
-This project is a starting point for a Flutter application.
+O list_tasks é um aplicativo móvel desenvolvido em Flutter que permite aos usuários gerenciar suas tarefas de forma eficiente. Com autenticação de usuário e banco de dados Firebase integrados, o list_tasks oferece as seguintes funcionalidades:
 
-A few resources to get you started if this is your first Flutter project:
+- Adicionar, editar e excluir tarefas.
+- Definir níveis de prioridade para as tarefas.
+- Definir datas de entrega para as tarefas.
+- Marcar tarefas como concluídas.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Observação:** Este projeto ainda está em desenvolvimento e pode conter algumas funcionalidades incompletas ou bugs.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Funcionalidades
+
+- Autenticação de usuário utilizando Firebase Authentication.
+- Banco de dados em tempo real utilizando Firebase Firestore.
+- CRUD completo de tarefas (Create, Read, Update, Delete).
+- Classificação de tarefas por nível de prioridade e data de entrega.
+- Marcar tarefas como concluídas.

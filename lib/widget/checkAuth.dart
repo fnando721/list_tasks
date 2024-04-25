@@ -1,13 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:tarefas/screen/login.dart';
-import 'package:tarefas/screen/task_list.dart';
+import '../pages/login_page.dart';
+import '../pages/task_list.dart';
+import '../services/auth_service.dart';
 
 class CheckAuth extends StatelessWidget{
-  final bool userIsAuthenticated = false;
+
+
+  AuthService auth = AuthService();
+
+  Auth() async {
+    UserCredential? userCredential = await auth.user;
+    return userCredential;
+  }
 
   @override
   Widget build(BuildContext context){
-    return userIsAuthenticated? TaskList(): Login();
+
+    return Auth() == null? Login() : TaskList();
   }
 }

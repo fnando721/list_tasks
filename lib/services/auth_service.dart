@@ -1,39 +1,68 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tarefas/database/db_firestore.dart';
+import 'package:tarefas/models/task.dart';
 
 
-class AuthService extends ChangeNotifier {
-  FirebaseAuth _firebaseUser = FirebaseAuth.instance;
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _firebaseUser;
   var userIsAuthenticated = false;
+  UserCredential? user;
 
- @override
-  authService(String email){
-   _firebaseUser
+  @override
+  auth(){
+   _auth
        .authStateChanges()
        .listen((User? user) {
 
-     if (user == null) {
+     if (user != null) {
        userIsAuthenticated = true;
      } else {
        userIsAuthenticated = false ;
      }
    });
-  notifyListeners();
  }
 
+  static AuthService get to => AuthService();
+
+
+
+ definirTask(Task task){
+ final userId = _firebaseUser!.uid;
+  try{
+
+  } catch (e){
+    FirebaseFirestore db = DBFirestore.get();
+    //await db.collection('usuarios').doc(userId).set({})
+
+  }
+ }
 
  createdUser(String email, String password) async{
    try{
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    await _auth.createUserWithEmailAndPassword(email: email, password: password);
    } catch (e){
     e.toString();
    }
  }
 
-  login(String email, String password) async{
-    try{
-      UserCredential user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    } catch (e){
+
+login(String email , String password) async{
+   try {
+      user =  await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return user;
+   }catch (e) {
+     e.toString();
+
+   }
+ }
+
+  logout () async{
+    try {
+      await _auth.signOut();
+      user = null;
+    }catch (e) {
       e.toString();
     }
   }
