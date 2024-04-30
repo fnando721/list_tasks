@@ -11,7 +11,6 @@ O list_tasks é um aplicativo móvel desenvolvido em Flutter que permite aos usu
 - Definir datas de entrega para as tarefas.
 - Marcar tarefas como concluídas.
 
-**Observação:** Este projeto ainda está em desenvolvimento e pode conter algumas funcionalidades incompletas ou bugs.
 
 ## Funcionalidades
 
@@ -20,3 +19,6 @@ O list_tasks é um aplicativo móvel desenvolvido em Flutter que permite aos usu
 - CRUD completo de tarefas (Create, Read, Update, Delete).
 - Classificação de tarefas por nível de prioridade e data de entrega.
 - Marcar tarefas como concluídas.
+
+
+**Observação:** Este projeto ainda está em desenvolvimento e pode conter algumas funcionalidades incompletas ou bugs.
