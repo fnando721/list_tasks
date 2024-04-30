@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/models/task.dart';
+import '../controller/task_controller.dart';
 import '../services/auth_service.dart';
 import 'add_task.dart';
 import 'detail_task.dart';
-import 'login_page.dart';
+import 'login.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
@@ -16,11 +17,10 @@ class TaskList extends StatefulWidget {
 
 class _TaskListState extends State<TaskList> {
   @override
+  TaskController  taskController = TaskController();
+
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    AuthService auth = AuthService();
-
-
 
     final Stream<QuerySnapshot> tarefaStream =
         FirebaseFirestore.instance.collection('Tarefa').snapshots();
@@ -50,6 +50,7 @@ class _TaskListState extends State<TaskList> {
               )),
           IconButton(
             onPressed: () {
+              taskController.logout();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => Login()),

@@ -50,18 +50,15 @@ class AuthService {
 
 login(String email , String password) async{
    try {
-      user =  await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return user;
+     user = await _auth.signInWithEmailAndPassword(email: email, password: password);
    }catch (e) {
      e.toString();
-
    }
  }
 
   logout () async{
     try {
       await _auth.signOut();
-      user = null;
     }catch (e) {
       e.toString();
     }

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/components/textFormsFieldsLogin.dart';
-import 'package:tarefas/pages/task_list.dart';
-import 'package:tarefas/services/auth_service.dart';
+import 'package:tarefas/pages/tasks.dart';
+import '../controller/login_controller.dart';
+import '../services/auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,18 +16,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  LoginController loginController = LoginController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Form(
-      key: _formKey,
+    return !loginController.isWaiting? Form(
+      key: loginController.formKey,
       child: Scaffold(
-        body: InkWell(
+        body: GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
                       child: SvgPicture.network(
                           'https://www.svgrepo.com/show/438998/task-runners.svg')),
                   SizedBox(
-                    height: size.height * 0.15,
+                    height: size.height * 0.1,
                   ),
                   SizedBox(
                     width: size.width * 0.8,
@@ -53,23 +53,25 @@ class _LoginState extends State<Login> {
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: TextFormField(
-                            controller: emailController,
+                            controller: loginController.emailController,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Digite seu E-mail';
-                              } else if (value.contains('@') ? false : true) {
+                              } else if (!value.contains('@')) {
                                 return 'O email está incorreto';
                               }
                               return null;
                             },
-                            decoration: textFormsFieldsLogin('Login',
-                                const Icon(Icons.supervised_user_circle_outlined)),
+                            decoration: textFormsFieldsLogin(
+                                'Login',
+                                const Icon(
+                                    Icons.supervised_user_circle_outlined)),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: TextFormField(
-                            controller: passwordController,
+                            controller: loginController.passwordController,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Digite sua senha!';
@@ -85,20 +87,20 @@ class _LoginState extends State<Login> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(16),
-                          child: InkWell(
+                          child: GestureDetector(
                             onTap: () {
-                              setState(() async {
-                                if (_formKey.currentState!.validate()) {
-                                  AuthService auth = AuthService();
-
+                              setState(() {
+                                if (loginController.formKey.currentState!
+                                    .validate()) {
                                   try {
-                                    UserCredential? user = await auth.login(
-                                        emailController.text,
-                                        passwordController.text);
-                                    if (user != null) {
+                                    print("Validação");
+                                    loginController.login();
+                                    print("teste"+ loginController.auth.user!.user!.email.toString());
+                                    if (loginController.auth.user != null) {
                                       Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
-                                          builder: (context) => const TaskList(),
+                                          builder: (context) =>
+                                              const TaskList(),
                                         ),
                                       );
                                     } else {
@@ -107,18 +109,18 @@ class _LoginState extends State<Login> {
                                         content: Text(
                                             'Seu email ou senha está incorreto!'),
                                       ));
+                                      loginController.isWaiting = false;
                                     }
                                   } catch (e) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          'Seu email ou senha está incorreto!'),
+                                      content: Text('Tente novamente!'),
+
                                     ));
                                   }
                                 }
                               });
                             },
-
                             child: Container(
                               width: size.width * 0.8,
                               height: size.height * 0.06,
@@ -144,6 +146,15 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
-    );
+    ) : Container(
+      height: size.height,
+      width: size.width,
+      color: Colors.blueGrey,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    )
+     ;
+
   }
 }
