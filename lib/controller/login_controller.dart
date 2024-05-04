@@ -13,13 +13,11 @@ class LoginController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  login() {
+  Future<UserCredential?>login()  async{
     try {
-      userCredential =
-          auth.login(emailController.text, passwordController.text);
-      return userCredential;
+      return  await auth.login(emailController.text, passwordController.text);
     } catch (e) {
-      e.toString();
+      return null;
     }
   }
 }

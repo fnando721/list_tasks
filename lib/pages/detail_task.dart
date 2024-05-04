@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tarefas/models/task.dart';
 import '../components/DateTimePickerCustom.dart';
 import '../components/TextFormFieldCustom.dart';
+import '../controller/detail_controller.dart';
 
 class DetailTask extends StatefulWidget {
   DetailTask({super.key, required this.task});
@@ -13,29 +14,38 @@ class DetailTask extends StatefulWidget {
 }
 
 class _DetailTaskState extends State<DetailTask> {
-  bool estaFeito = false;
+  bool isTaskDone = false;
+  DetailController? detailController;
+
+  @override
+  void initState() {
+    super.initState();
+    detailController = DetailController(
+        task: widget.task,
+        nameController:
+            TextEditingController(text: widget.task.name.toString()),
+        descriptionController:
+            TextEditingController(text: widget.task.description.toString()),
+        dateController:
+            TextEditingController(text: widget.task.date.toString()),
+        isDone: widget.task.isDone);
+
+    detailController!.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _nameController =
-        TextEditingController(text: widget.task.name.toString());
-    final _descriptionController =
-        TextEditingController(text: widget.task.description.toString());
-    final _dateController =
-        TextEditingController(text: widget.task.date.toString());
-    final _formKey = GlobalKey<FormState>();
-
     Size size = MediaQuery.of(context).size;
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          FocusScope.of(context).requestFocus(FocusNode());
-        });
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Detalhes da Tarefa',
             style: TextStyle(color: Colors.white),
           ),
@@ -44,13 +54,23 @@ class _DetailTaskState extends State<DetailTask> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_rounded,
                 color: Colors.white,
               )),
+          actions: [
+            detailController!.isButton
+                ? IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.save,
+                      color: Colors.white,
+                    ))
+                : const SizedBox()
+          ],
         ),
         body: Form(
-          key: _formKey,
+          key: detailController!.formKey,
           child: Center(
             child: Container(
               width: size.width * 0.9,
@@ -64,7 +84,7 @@ class _DetailTaskState extends State<DetailTask> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Text(
+                      const Text(
                         'Titulo',
                         style: TextStyle(fontSize: 16),
                       ),
@@ -72,35 +92,51 @@ class _DetailTaskState extends State<DetailTask> {
                         width: size.width,
                         child: TextFormFieldCustom(
                             title: 'Titulo',
-                            controller: _nameController,
+                            controller: detailController!.nameController,
                             msgError: 'Digite o nome da tarefa',
-                            maxLines: null),
+                            maxLines: null,
+                            onChangedFunction: (_) {
+                              detailController!.change();
+                            }),
                       ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Text(
+                      const Text(
                         'Descrição',
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(
-                        width: size.width,
-                        height: size.height * 0.2,
-                        child: TextFormFieldCustom(
-                            title: 'Descrição',
-                            controller: _descriptionController,
-                            msgError: null,
-                            maxLines: 10),
+                      InkWell(
+                        onTap: () {
+                          detailController!.change();
+                        },
+                        child: SizedBox(
+                          width: size.width,
+                          height: size.height * 0.2,
+                          child: TextFormFieldCustom(
+                              title: 'Descrição',
+                              controller:
+                                  detailController!.descriptionController,
+                              msgError: null,
+                              maxLines: 10,
+                              onChangedFunction: (_) {
+                                detailController!.change();
+                              }),
+                        ),
                       ),
-
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Text(
+                      const Text(
                         'Data',
                         style: TextStyle(fontSize: 16),
                       ),
-                      DateTimePickerCustom(title: 'Data de Entrega',controller: _dateController),
+                      DateTimePickerCustom(
+                          title: 'Data de Entrega',
+                          controller: detailController!.dateController,
+                          onChangedFunction: (_) {
+                            detailController!.change();
+                          }),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
@@ -110,10 +146,10 @@ class _DetailTaskState extends State<DetailTask> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Switch(
-                                value: estaFeito,
+                                value: detailController!.isDone,
                                 onChanged: (bool newValue) {
                                   setState(() {
-                                    estaFeito = newValue;
+                                    detailController!.isDone = newValue;
                                   });
                                 },
                               ),

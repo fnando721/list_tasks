@@ -63,7 +63,7 @@ class _TaskListState extends State<TaskList> {
           ),
         ],
       ),
-      endDrawer: Container(),
+      endDrawer: Container(color: Colors.white),
       body: Container(
         width: size.width,
         height: size.height,

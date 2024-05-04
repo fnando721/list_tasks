@@ -1,12 +1,9 @@
-import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/components/textFormsFieldsLogin.dart';
 import 'package:tarefas/pages/tasks.dart';
 import '../controller/login_controller.dart';
-import '../services/auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -89,13 +86,11 @@ class _LoginState extends State<Login> {
                           padding: const EdgeInsets.all(16),
                           child: GestureDetector(
                             onTap: () {
-                              setState(() {
+                              setState(() async {
                                 if (loginController.formKey.currentState!
                                     .validate()) {
                                   try {
-                                    print("Validação");
-                                    loginController.login();
-                                    print("teste"+ loginController.auth.user!.user!.email.toString());
+                                    await loginController.login();
                                     if (loginController.auth.user != null) {
                                       Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(

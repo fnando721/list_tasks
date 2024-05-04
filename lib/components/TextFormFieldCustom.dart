@@ -8,10 +8,11 @@ class TextFormFieldCustom extends StatefulWidget {
   final TextEditingController controller;
   final String? msgError;
   final int? maxLines;
+  final Function(String)? onChangedFunction;
 
 
 
-  TextFormFieldCustom({required this.title, required this.controller, required this.msgError , required this.maxLines});
+  TextFormFieldCustom({required this.title, required this.controller, required this.msgError , required this.maxLines, this.onChangedFunction});
 
   @override
   State<TextFormFieldCustom> createState() => _TextFormFieldCustomState();
@@ -32,6 +33,7 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
       // inputFormatters: <TextInputFormatter>[
       //   FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
       // ],
+      onChanged: widget.onChangedFunction,
       decoration: InputDecoration(
 
         border: OutlineInputBorder(

@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 class DateTimePickerCustom extends StatelessWidget {
   final String title;
   final TextEditingController controller;
+  final Function(String)? onChangedFunction;
 
-  const DateTimePickerCustom({super.key, required this.title, required this.controller });
+  const DateTimePickerCustom({super.key, required this.title, required this.controller, this.onChangedFunction});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +32,7 @@ class DateTimePickerCustom extends StatelessWidget {
       type: DateTimePickerType.date,
       controller: controller,
       validator: (value) => value == null? 'Adicione a Data': null,
-      onChanged: (date){
-
-      },
+      onChanged: onChangedFunction,
       dateMask: 'dd/MM/yyyy',
 //locale: Locale('pt', 'BR'),
     );;
