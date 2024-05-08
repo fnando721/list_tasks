@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../pages/login.dart';
-import '../pages/tasks.dart';
+import '../pages/login_page.dart';
+import '../pages/tasks_page.dart';
 import '../services/auth_service.dart';
 
 class CheckAuth extends StatelessWidget{
@@ -9,6 +9,6 @@ class CheckAuth extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return auth.user != null ? const TaskList(): const  Login() ;
+    return auth.user != null ? const TaskListPage(): const  LoginPage() ;
   }
 }

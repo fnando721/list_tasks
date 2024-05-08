@@ -22,7 +22,7 @@ Future<void> addTask(Task task) async {
 
   await db.collection('Tarefa').add({
     'name': task.name,
-    'priority': 'forte',
+    'priority': task.priorityToString(),
     'description': task.description,
     'date': task.date,
     'isDone': task.isDone

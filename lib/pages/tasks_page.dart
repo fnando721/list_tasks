@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/models/task.dart';
 import '../controller/task_controller.dart';
-import '../services/auth_service.dart';
-import 'add_task.dart';
-import 'detail_task.dart';
-import 'login.dart';
+import 'add_task_page.dart';
+import 'detail_task_page.dart';
+import 'login_page.dart';
 
-class TaskList extends StatefulWidget {
-  const TaskList({super.key});
+class TaskListPage extends StatefulWidget {
+  const TaskListPage({super.key});
 
   @override
-  State<TaskList> createState() => _TaskListState();
+  State<TaskListPage> createState() => _TaskListPageState();
 }
 
-class _TaskListState extends State<TaskList> {
-  @override
-  TaskController  taskController = TaskController();
+class _TaskListPageState extends State<TaskListPage> {
+  TaskController taskController = TaskController();
 
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     final Stream<QuerySnapshot> tarefaStream =
         FirebaseFirestore.instance.collection('Tarefa').snapshots();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +40,7 @@ class _TaskListState extends State<TaskList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AddTask(),
+                    builder: (context) => const AddTaskPage(),
                   ),
                 );
               },
@@ -53,7 +53,7 @@ class _TaskListState extends State<TaskList> {
               taskController.logout();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
             icon: const Icon(
@@ -72,8 +72,6 @@ class _TaskListState extends State<TaskList> {
           stream: tarefaStream,
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
-
             if (snapshot.hasError) {
               return const Center(
                   child: Text(
@@ -81,7 +79,6 @@ class _TaskListState extends State<TaskList> {
                 style: TextStyle(color: Colors.red, fontSize: 16),
               ));
             }
-
 
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -94,31 +91,33 @@ class _TaskListState extends State<TaskList> {
               ));
             }
 
-
-
-
-
-
             return ListView(
-
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              children:
+              snapshot.data!.docs.map((DocumentSnapshot document) {
+                String id = document.id;
                 Map<String, dynamic> data =
                     document.data()! as Map<String, dynamic>;
-                print(data);
-                if (data == null || data.toString().isEmpty){
+                //print(data.toString());
+                if ( data == {}) {
                   return Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.network('https://www.svgrepo.com/show/310081/task-list-add.svg'),
-                          Text("Adicione uma Atividade!"),
-                        ],
-                      ));
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.network(
+                          'https://www.svgrepo.com/show/310081/task-list-add.svg'),
+                      const Text("Adicione uma Atividade!"),
+                    ],
+                  ));
                 }
 
                 Timestamp t = data['date'];
-                Task task = Task(data['name'], 'priority', data['description'],
-                    t.toDate(), data['isDone']);
+                Task task = Task(
+                  name: data['name'],
+                  priority: Task.stringToPriority(data['priority']),
+                  description: data['description'],
+                  date: t.toDate(),
+                  isDone: data['isDone'],
+                );
 
                 return Padding(
                   padding: const EdgeInsets.all(8),
@@ -127,7 +126,7 @@ class _TaskListState extends State<TaskList> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DetailTask(task: task)));
+                              builder: (context) => DetailTaskPage(id: id ,task: task)));
                     },
                     child: Container(
                       width: size.width * 0.8,
@@ -153,9 +152,9 @@ class _TaskListState extends State<TaskList> {
                                   width: size.width * 0.8,
                                   child: Row(
                                     children: <Widget>[
-                                      const Icon(
+                                      Icon(
                                         Icons.label_important,
-                                        color: Colors.amber,
+                                        color: taskController.colorPriority(task.priority),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8),
@@ -180,8 +179,11 @@ class _TaskListState extends State<TaskList> {
                             width: size.width * 0.03,
                             height: size.height * 0.03,
                             child: CircleAvatar(
-                              backgroundColor:
-                                  task.isDone ? Colors.green : task.date == DateTime.now()? Colors.amber: Colors.red ,
+                              backgroundColor: task.isDone
+                                  ? Colors.green
+                                  : task.date == DateTime.now()
+                                      ? Colors.amber
+                                      : Colors.red,
                             ),
                           )
                         ],

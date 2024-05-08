@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:tarefas/controller/add_task_controller.dart';
 import 'package:tarefas/models/repository/task_repository.dart';
-import 'package:tarefas/models/task.dart';
 import '../components/DateTimePickerCustom.dart';
 import '../components/TextFormFieldCustom.dart';
+import '../models/priority.dart';
 
-class AddTask extends StatefulWidget {
-  const AddTask({super.key});
+class AddTaskPage extends StatefulWidget {
+   const AddTaskPage({super.key});
 
   @override
-  State<AddTask> createState() => _AddTaskState();
+  State<AddTaskPage> createState() => _AddTaskPageState();
 }
 
-class _AddTaskState extends State<AddTask> {
-  final _formKey = GlobalKey<FormState>();
-  bool isDone = false;
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  DateTime? _date;
-
+class _AddTaskPageState extends State<AddTaskPage> {
   TasksRepository tasksRepository = TasksRepository();
+  AddTaskController addTaskController = AddTaskController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    addTaskController.addListener(() {
+      setState(() {
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,33 @@ class _AddTaskState extends State<AddTask> {
                     SizedBox(
                       height: size.height * 0.03,
                     ),
+                    Center(
+                      child: Column(
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Prioridade'),
+                          SegmentedButton<Priority>(
+                              segments: addTaskController.prioritySegments,
+                              selected: addTaskController.prioritySelection,
+                              onSelectionChanged: (value) {
+
+                                  addTaskController.changePriority(value);
+
+                              },
+                              style: ButtonStyle(
+                                  enableFeedback: false,
+                                  foregroundColor:
+                                      MaterialStateProperty.resolveWith(
+                                          (states) => Colors.white),
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith(
+                                          (states) => Colors.blueGrey))),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.03,
+                    ),
                     const Text(
                       'Titulo',
                       style: TextStyle(fontSize: 16),
@@ -70,7 +100,7 @@ class _AddTaskState extends State<AddTask> {
                       width: size.width,
                       child: TextFormFieldCustom(
                         title: 'Titulo',
-                        controller: _nameController,
+                        controller: addTaskController.nameController,
                         msgError: 'Digite o nome da tarefa',
                         maxLines: null,
                       ),
@@ -87,7 +117,7 @@ class _AddTaskState extends State<AddTask> {
                       height: size.height * 0.2,
                       child: TextFormFieldCustom(
                         title: 'Descrição',
-                        controller: _descriptionController,
+                        controller: addTaskController.descriptionController,
                         msgError: null,
                         maxLines: 10,
                       ),
@@ -100,7 +130,8 @@ class _AddTaskState extends State<AddTask> {
                       style: TextStyle(fontSize: 16),
                     ),
                     DateTimePickerCustom(
-                        title: 'Data de Entrega', controller: _dateController),
+                        title: 'Data de Entrega',
+                        controller: addTaskController.dateController),
                     SizedBox(
                       height: size.height * 0.03,
                     ),
@@ -110,10 +141,10 @@ class _AddTaskState extends State<AddTask> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Switch(
-                              value: isDone,
+                              value: addTaskController.isDone,
                               onChanged: (bool newValue) {
                                 setState(() {
-                                  isDone = newValue;
+                                  addTaskController.isDone = newValue;
                                 });
                               },
                             ),
@@ -129,21 +160,7 @@ class _AddTaskState extends State<AddTask> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 32),
                         child: GestureDetector(
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              _date = _parseDate(_dateController.text);
-
-                              if (_date != null) {
-                                tasksRepository.addTask(Task(
-                                    _nameController.text,
-                                    null,
-                                    _descriptionController.text,
-                                    _date!,
-                                    isDone));
-                                Navigator.pop(context);
-                              }
-                            }
-                          },
+                          onTap: addTaskController.validate(context, _formKey),
                           child: Container(
                             width: size.width * 0.5,
                             height: size.height * 0.07,
@@ -161,6 +178,9 @@ class _AddTaskState extends State<AddTask> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: size.height * 0.1,
+                    ),
                   ],
                 ),
               ),
@@ -169,14 +189,5 @@ class _AddTaskState extends State<AddTask> {
         ),
       ),
     );
-  }
-
-  DateTime? _parseDate(String input) {
-    // Utilize o DateFormat para analisar a string de data
-    try {
-      return DateFormat('yyyy-MM-dd').parseStrict(input);
-    } catch (e) {
-      return null;
-    }
   }
 }

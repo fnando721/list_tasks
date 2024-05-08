@@ -2,17 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/components/textFormsFieldsLogin.dart';
-import 'package:tarefas/pages/tasks.dart';
+import 'package:tarefas/pages/tasks_page.dart';
 import '../controller/login_controller.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   LoginController loginController = LoginController();
 
   @override
@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                                       Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const TaskList(),
+                                              const TaskListPage(),
                                         ),
                                       );
                                     } else {

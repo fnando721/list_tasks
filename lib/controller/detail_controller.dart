@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tarefas/models/task.dart';
 
@@ -32,5 +33,44 @@ class DetailController extends ChangeNotifier {
       isButton = false;
       notifyListeners();
     }
+  }
+
+  void Function()? deleteFunc(BuildContext context) {
+    return () {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Atenção'),
+          content: Text('Deseja realmente apagar essa tarefa?',style: TextStyle(color: Colors.white),),
+          actions: <Widget>[
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Não'),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Sim'),
+              style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.white),
+                textStyle: MaterialStateProperty.resolveWith((states) => TextStyle(fontSize: 18)),
+
+              ),
+
+            ),
+          ],
+          elevation: 24.0,
+          backgroundColor: Colors.blueGrey,
+        ),
+      );
+    };
   }
 }
