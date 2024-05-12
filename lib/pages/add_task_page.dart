@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tarefas/controller/add_task_controller.dart';
-import 'package:tarefas/models/repository/task_repository.dart';
+import 'package:tarefas/controller/repository/task_repository.dart';
 import '../components/DateTimePickerCustom.dart';
 import '../components/TextFormFieldCustom.dart';
 import '../models/priority.dart';
@@ -74,7 +74,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               segments: addTaskController.prioritySegments,
                               selected: addTaskController.prioritySelection,
                               onSelectionChanged: (value) {
-
                                   addTaskController.changePriority(value);
 
                               },
@@ -82,10 +81,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   enableFeedback: false,
                                   foregroundColor:
                                       MaterialStateProperty.resolveWith(
-                                          (states) => Colors.white),
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith(
-                                          (states) => Colors.blueGrey))),
+                                          (states) => Colors.black),
+                                  // backgroundColor:
+                                  //     MaterialStateProperty.resolveWith(
+                                  //         (states) => Colors.blueGrey)
+                              )),
                         ],
                       ),
                     ),

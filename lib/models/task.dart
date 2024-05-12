@@ -20,7 +20,7 @@ class Task {
   factory Task.fromJson(Map<String, dynamic> map) {
     return Task(
       name: map['name'],
-      priority: stringToPriority(map['priority']),
+      priority:map['priority'],
       description: map['description'],
       date: DateTime.parse(map['date']),
       isDone: map['isDone'],
@@ -28,7 +28,7 @@ class Task {
   }
 
 
-  String priorityToString() {
+   String priorityToString() {
     switch (priority) {
       case Priority.low:
         return 'baixa';
@@ -41,7 +41,7 @@ class Task {
     }
   }
 
-  // Converte a string de volta para o enum
+
   static Priority stringToPriority(String priorityString) {
     switch (priorityString) {
       case 'baixa':
@@ -55,7 +55,6 @@ class Task {
     }
   }
 
-  // Converte o objeto Task para um mapa
   Map<String, dynamic> toMap() {
     return {
       'name': name,
