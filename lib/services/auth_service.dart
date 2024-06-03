@@ -27,18 +27,6 @@ class AuthService {
   static AuthService get to => AuthService();
 
 
-
- definirTask(Task task){
- final userId = _firebaseUser!.uid;
-  try{
-
-  } catch (e){
-    FirebaseFirestore db = DBFirestore.get();
-    //await db.collection('usuarios').doc(userId).set({})
-
-  }
- }
-
  createdUser(String email, String password) async{
    try{
     await _auth.createUserWithEmailAndPassword(email: email, password: password);

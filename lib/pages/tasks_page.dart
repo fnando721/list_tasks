@@ -19,11 +19,18 @@ class _TaskListPageState extends State<TaskListPage> {
   TaskController taskController = TaskController();
 
   @override
+  void initState() {
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     final Stream<QuerySnapshot> tarefaStream = FirebaseFirestore.instance
         .collection('Tarefa')
+        .where('isDone', isEqualTo: false)
         .orderBy('date')
         .snapshots();
 
@@ -68,7 +75,7 @@ class _TaskListPageState extends State<TaskListPage> {
           ),
         ],
       ),
-      endDrawer: Container(color: Colors.white),
+      drawer: Drawer(),
       body: Container(
         width: size.width,
         height: size.height,
@@ -80,20 +87,20 @@ class _TaskListPageState extends State<TaskListPage> {
             if (snapshot.hasError) {
               return const Center(
                   child: Text(
-                'Erro ao buscar usuário!',
-                style: TextStyle(color: Colors.red, fontSize: 16),
-              ));
+                    'Tente Novamente!',
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ));
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
+              return Center(
                   child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text("Carregando tarefas"),
-                ],
-              ));
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text("Carregando tarefas"),
+                    ],
+                  ));
             }
 
             if (snapshot.data!.docs.isEmpty) {
@@ -121,7 +128,8 @@ class _TaskListPageState extends State<TaskListPage> {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 String id = document.id;
                 Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+                document.data()! as Map<String, dynamic>;
+
 
                 Timestamp t = data['date'];
                 Task task = Task(
@@ -140,25 +148,25 @@ class _TaskListPageState extends State<TaskListPage> {
                     children: [
                       dataDiferente
                           ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 105,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueGrey,
-                                    borderRadius: BorderRadius.circular(8)
-                                  ),
-                                  child: Center(
-                                    child: Text(DateFormat('dd/MM/yyyy')
-                                        .format(task.date)
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),),
-                                  ),
-                                ),
-                              ))
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: size.width * 0.3,
+                              decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              child: Center(
+                                child: Text(DateFormat('dd/MM/yyyy')
+                                    .format(task.date)
+                                    .toString(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),),
+                              ),
+                            ),
+                          ))
                           : SizedBox(),
                       Padding(
                         padding: const EdgeInsets.all(8),
@@ -189,7 +197,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                   padding: const EdgeInsets.only(left: 16),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: <Widget>[
                                       SizedBox(
                                         width: size.width * 0.8,
@@ -209,11 +217,11 @@ class _TaskListPageState extends State<TaskListPage> {
                                                     child: Text(
                                                       task.name,
                                                       overflow:
-                                                          TextOverflow.ellipsis,
+                                                      TextOverflow.ellipsis,
                                                       style: const TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
-                                                            FontWeight.bold,
+                                                        FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
@@ -242,8 +250,8 @@ class _TaskListPageState extends State<TaskListPage> {
                                     backgroundColor: task.isDone
                                         ? Colors.green
                                         : task.date == DateTime.now()
-                                            ? Colors.amber
-                                            : Colors.red,
+                                        ? Colors.amber
+                                        : Colors.red,
                                   ),
                                 )
                               ],

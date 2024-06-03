@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tarefas/components/textFormsFieldsLogin.dart';
-import 'package:tarefas/pages/tasks_page.dart';
+import 'package:tarefas/pages/home_page.dart';
 import '../controller/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,8 +15,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   LoginController loginController = LoginController();
 
-  void initialState() {
+  @override
+  void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     loginController.addListener(() {
       setState(() {});
     });
@@ -114,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 .pushReplacement(
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const TaskListPage(),
+                                                    const HomePage(),
                                               ),
                                             );
                                           } else {
@@ -127,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                                         }
                                       } catch (e) {
                                         ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
+                                            .showSnackBar(const SnackBar(
                                                 content: Text(
                                                     'Erro ao Inicar, tente mais tarde!')));
                                       }
@@ -150,9 +153,9 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                              GestureDetector(
+                              InkWell(
                                 onTap: () {},
-                                child: Text(
+                                child: const Text(
                                   'Registrar-se',
                                   style: TextStyle(fontSize: 16),
                                 ),
